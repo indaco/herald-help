@@ -1,0 +1,76 @@
+version: "2"
+run:
+  tests: true
+  timeout: 5m
+linters:
+  enable:
+    - asasalint
+    - bodyclose
+    - errcheck
+    - errorlint
+    - gocritic
+    - gosec
+    - govet
+    - ineffassign
+    - noctx
+    - prealloc
+    - revive
+    - staticcheck
+    - unconvert
+    - unused
+  settings:
+    staticcheck:
+      checks:
+        - "all"
+    gocritic:
+      enabled-tags:
+        - diagnostic
+        - performance
+        - style
+      disabled-checks:
+        - hugeParam
+        - filepathJoin
+        - commentedOutCode
+        - unnamedResult
+        - ifElseChain
+        - paramTypeCombine
+        - importShadow
+        - emptyStringTest
+        - regexpSimplify
+    gosec:
+      excludes:
+        - G304
+    revive:
+      severity: warning
+      rules:
+        - name: dot-imports
+          severity: error
+        - name: var-naming
+        - name: indent-error-flow
+        - name: error-return
+        - name: unexported-return
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - path: _test\.go
+        text: should have comment
+    paths:
+      - examples$
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  exclusions:
+    generated: lax
+    paths:
+      - examples$
+output:
+  formats:
+    text:
+      path: stdout
+      colors: true
