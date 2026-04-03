@@ -8,15 +8,15 @@ on:
       - main
     paths:
       - "**.go"
-      - "go.mod"
-      - "go.sum"
+      - "**/go.mod"
+      - "**/go.sum"
   pull_request:
     branches:
       - main
     paths:
       - "**.go"
-      - "go.mod"
-      - "go.sum"
+      - "**/go.mod"
+      - "**/go.sum"
   workflow_dispatch:
 
 permissions: {}
@@ -30,6 +30,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        module:
+          - { name: root, path: ".", cache: "go.sum" }
+          - { name: cobra, path: cobra, cache: "cobra/go.sum" }
+          - { name: kong, path: kong, cache: "kong/go.sum" }
+          - { name: urfave, path: urfave, cache: "urfave/go.sum" }
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -40,23 +48,21 @@ jobs:
         uses: actions/setup-go@v6
         with:
           go-version: ${{ env.GO_VERSION }}
-          cache-dependency-path: go.sum
+          cache-dependency-path: ${{ matrix.module.cache }}
           check-latest: true
 
       - name: Install Go modules
+        working-directory: ${{ matrix.module.path }}
         run: go mod download
 
       - name: Verify dependencies
+        working-directory: ${{ matrix.module.path }}
         run: go mod verify
-
-      - name: Install just
-        uses: taiki-e/install-action@v2
-        with:
-          tool: just
 
       - name: Install govulncheck
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
 
       - name: Run govulncheck
-        run: just security-scan
+        working-directory: ${{ matrix.module.path }}
+        run: govulncheck ./...
