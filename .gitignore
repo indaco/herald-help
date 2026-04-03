@@ -39,5 +39,8 @@ coverage.txt
 build
 dist/
 
+# go workspace (local development only)
+go.work.sum
+
 # screenshots
 assets/
