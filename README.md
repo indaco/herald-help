@@ -66,7 +66,7 @@ go get github.com/indaco/herald-help@latest
 
 ## Quick Start
 
-Framework adapters are sub-modules — each has its own `go.mod`, so importing one does not pull in the others.
+Framework adapters are sub-modules - each has its own `go.mod`, so importing one does not pull in the others.
 
 | Framework                                      | Install                                              | Package        |
 | ---------------------------------------------- | ---------------------------------------------------- | -------------- |
@@ -74,7 +74,7 @@ Framework adapters are sub-modules — each has its own `go.mod`, so importing o
 | [urfave/cli/v3](https://github.com/urfave/cli) | `go get github.com/indaco/herald-help/urfave@latest` | `heraldurfave` |
 | [kong](https://github.com/alecthomas/kong)     | `go get github.com/indaco/herald-help/kong@latest`   | `heraldkong`   |
 
-The stdlib `flag` adapter (`FromFlagSet`) is included in the core module — no extra install needed.
+The stdlib `flag` adapter (`FromFlagSet`) is included in the core module - no extra install needed.
 
 ### Standalone
 
@@ -199,7 +199,7 @@ heraldhelp.RenderTo(os.Stdout, ty, cmd, heraldhelp.WithStyle(heraldhelp.StyleRic
 // Grouped style with fieldset borders
 heraldhelp.RenderTo(os.Stdout, ty, cmd, heraldhelp.WithStyle(heraldhelp.StyleGrouped))
 
-// Markdown output — pipe to glow or render via herald-md
+// Markdown output - pipe to glow or render via herald-md
 md := heraldhelp.Render(ty, cmd, heraldhelp.WithStyle(heraldhelp.StyleMarkdown))
 ```
 
@@ -255,7 +255,7 @@ Flags are displayed in GNU-style format (`-o, --output`). Environment variables 
 
 Runnable examples are in the [`examples/`](examples/) directory, organized by style. The `0xx` examples run directly; the adapter examples (`002+`) are separate modules.
 
-**Compact style** (default — uppercase headings, indented two-column lists, no borders):
+**Compact style** (default - uppercase headings, indented two-column lists, no borders):
 
 | Example                                                | Description                              | Run                                                 |
 | ------------------------------------------------------ | ---------------------------------------- | --------------------------------------------------- |

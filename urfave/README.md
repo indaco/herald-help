@@ -12,7 +12,7 @@
   </a>
 </p>
 
-urfave/cli adapter for [herald-help](../) - converts a `cli.Command` into a `heraldhelp.Command` for themed help rendering.
+urfave/cli adapter for [herald-help](../README.md) - converts a `cli.Command` into a `heraldhelp.Command` for themed help rendering.
 
 ## Installation
 
@@ -58,7 +58,7 @@ cli.HelpPrinter = func(w io.Writer, _ string, data any) {
 | `Commands`              | `Commands` / `CommandGroups` | Grouped by category when categories are set      |
 | Hidden commands         | Excluded                     |                                                  |
 
-See the [main README](../) for full rendering options and configuration.
+See the [main README](../README.md) for full rendering options and configuration.
 
 ## License
 

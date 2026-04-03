@@ -1,5 +1,5 @@
 // Themed help using a built-in herald theme (Dracula).
-// The theme is set on the herald.Typography instance — herald-help inherits
+// The theme is set on the herald.Typography instance - herald-help inherits
 // all colors automatically.
 // Run:
 //

@@ -12,7 +12,7 @@
   </a>
 </p>
 
-Kong adapter for [herald-help](../) - converts a `kong.Kong` application into a `heraldhelp.Command` for themed help rendering.
+Kong adapter for [herald-help](../README.md) - converts a `kong.Kong` application into a `heraldhelp.Command` for themed help rendering.
 
 ## Installation
 
@@ -61,7 +61,7 @@ parser, _ := kong.New(&cli,
 | Subcommands           | `Commands` / `CommandGroups` | Grouped by `group` tag when set                  |
 | `Node.Aliases`        | `CommandRef.Aliases`         |                                                  |
 
-See the [main README](../) for full rendering options and configuration.
+See the [main README](../README.md) for full rendering options and configuration.
 
 ## License
 

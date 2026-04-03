@@ -12,7 +12,7 @@
   </a>
 </p>
 
-Cobra adapter for [herald-help](../) - converts a `cobra.Command` into a `heraldhelp.Command` for themed help rendering.
+Cobra adapter for [herald-help](../README.md) - converts a `cobra.Command` into a `heraldhelp.Command` for themed help rendering.
 
 ## Installation
 
@@ -54,7 +54,7 @@ rootCmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
 | `Commands()`     | `Commands`                       | Excludes hidden subcommands                      |
 | `Example`        | `Examples`                       | Parsed into description + command pairs          |
 
-See the [main README](../) for full rendering options and configuration.
+See the [main README](../README.md) for full rendering options and configuration.
 
 ## License
 
