@@ -1,18 +1,20 @@
-name: ci
+name: "ci: root"
 
 on:
   push:
     branches: "**"
     paths:
-      - "**.go"
+      - "*.go"
       - "go.mod"
       - "go.sum"
+      - ".golangci.yaml"
   pull_request:
     branches: "**"
     paths:
-      - "**.go"
+      - "*.go"
       - "go.mod"
       - "go.sum"
+      - ".golangci.yaml"
   workflow_dispatch:
 
 permissions: {}
