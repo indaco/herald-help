@@ -28,7 +28,21 @@ jobs:
           GH_TOKEN: ${{ secrets.HERALD_HELP_TOKEN }}
           TAG_NAME: ${{ github.event.release.tag_name }}
         run: |
+          NOTES_FILE="${{ github.workspace }}/.changes/${TAG_NAME}.md"
+
+          # Validate notes file exists
+          if [ ! -f "$NOTES_FILE" ]; then
+            echo "::error::No release notes found at .changes/${TAG_NAME}.md"
+            exit 1
+          fi
+
+          # Only mark root module releases as --latest
+          LATEST_FLAG=""
+          if [[ "$TAG_NAME" == v* ]]; then
+            LATEST_FLAG="--latest"
+          fi
+
           gh release edit "$TAG_NAME" \
             --title "$TAG_NAME" \
-            --notes-file "${{ github.workspace }}/.changes/${TAG_NAME}.md" \
-            --latest
+            --notes-file "$NOTES_FILE" \
+            $LATEST_FLAG
