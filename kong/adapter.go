@@ -12,6 +12,7 @@ package heraldkong
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/alecthomas/kong"
@@ -113,7 +114,13 @@ func convertKongFlags(node *kong.Node, hc *heraldhelp.Command) {
 	}
 
 	hc.Flags = ungrouped
-	for title, flags := range groups {
+	groupKeys := make([]string, 0, len(groups))
+	for k := range groups {
+		groupKeys = append(groupKeys, k)
+	}
+	sort.Strings(groupKeys)
+	for _, title := range groupKeys {
+		flags := groups[title]
 		hc.FlagGroups = append(hc.FlagGroups, heraldhelp.FlagGroup{
 			Name:  title,
 			Flags: flags,
@@ -185,7 +192,13 @@ func convertKongChildren(node *kong.Node, hc *heraldhelp.Command) {
 	}
 
 	hc.Commands = ungrouped
-	for title, cmds := range groups {
+	groupKeys := make([]string, 0, len(groups))
+	for k := range groups {
+		groupKeys = append(groupKeys, k)
+	}
+	sort.Strings(groupKeys)
+	for _, title := range groupKeys {
+		cmds := groups[title]
 		hc.CommandGroups = append(hc.CommandGroups, heraldhelp.CommandGroup{
 			Name:     title,
 			Commands: cmds,

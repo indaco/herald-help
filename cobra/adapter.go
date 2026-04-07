@@ -93,8 +93,9 @@ func convertPflag(f *pflag.Flag, inherited bool) heraldhelp.Flag {
 }
 
 // parseExamples splits cobra's example string into heraldhelp.Example entries.
-// Lines starting with "$" or indented lines are treated as commands; other
-// non-empty lines are treated as descriptions.
+// Lines starting with "$ " or "$\t" are treated as commands; other non-empty
+// lines are treated as descriptions. Multiple description lines before a
+// command are joined with a space.
 func parseExamples(raw string) []heraldhelp.Example {
 	lines := strings.Split(strings.TrimSpace(raw), "\n")
 	var examples []heraldhelp.Example
