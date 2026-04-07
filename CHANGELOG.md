@@ -22,6 +22,24 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - [@indaco](https://github.com/indaco)
 
+## kong - v0.1.0 - 2026-04-07
+
+### 🚀 Enhancements
+
+- **kong:** add kong adapter and examples ([fdad3c1](https://github.com/indaco/herald-help/commit/fdad3c1))
+
+### 📖 Documentation
+
+- fix sub-module README links to root README ([771ff6b](https://github.com/indaco/herald-help/commit/771ff6b))
+
+### 🎉 New Contributors
+
+- [@indaco](https://github.com/indaco) made their first contribution in [771ff6b](https://github.com/indaco/herald-help/commit/771ff6b)
+
+### ❤️ Contributors
+
+- [@indaco](https://github.com/indaco)
+
 ## urfave - v0.1.0 - 2026-04-04
 
 ### 🚀 Enhancements
