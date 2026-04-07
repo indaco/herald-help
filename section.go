@@ -28,17 +28,20 @@ const (
 	SectionFooter
 )
 
-// DefaultSectionOrder defines the default ordering of help sections.
-var DefaultSectionOrder = []Section{
-	SectionName,
-	SectionDeprecated,
-	SectionSynopsis,
-	SectionDescription,
-	SectionArgs,
-	SectionFlags,
-	SectionInheritedFlags,
-	SectionCommands,
-	SectionExamples,
-	SectionSeeAlso,
-	SectionFooter,
+// DefaultSectionOrder returns the default ordering of help sections.
+// Each call returns a fresh copy, so callers cannot corrupt the shared default.
+func DefaultSectionOrder() []Section {
+	return []Section{
+		SectionName,
+		SectionDeprecated,
+		SectionSynopsis,
+		SectionDescription,
+		SectionArgs,
+		SectionFlags,
+		SectionInheritedFlags,
+		SectionCommands,
+		SectionExamples,
+		SectionSeeAlso,
+		SectionFooter,
+	}
 }

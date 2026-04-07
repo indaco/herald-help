@@ -2,7 +2,9 @@ package heraldhelp
 
 import (
 	"bytes"
+	"errors"
 	"regexp"
+	"slices"
 	"strings"
 	"testing"
 
@@ -488,18 +490,6 @@ func TestFormatVersion(t *testing.T) {
 }
 
 // ---------------------------------------------------------------------------
-// Width option
-// ---------------------------------------------------------------------------
-
-func TestWithWidth(t *testing.T) {
-	cfg := &RenderConfig{}
-	WithWidth(120)(cfg)
-	if cfg.Width != 120 {
-		t.Errorf("WithWidth(120) = %d, want 120", cfg.Width)
-	}
-}
-
-// ---------------------------------------------------------------------------
 // Flag groups only (no flat flags)
 // ---------------------------------------------------------------------------
 
@@ -623,9 +613,6 @@ func TestBuildConfigDefaults(t *testing.T) {
 	if cfg.ShowHidden {
 		t.Error("ShowHidden should default to false")
 	}
-	if cfg.Width != 0 {
-		t.Error("Width should default to 0")
-	}
 	if cfg.SectionOrder != nil {
 		t.Error("SectionOrder should default to nil")
 	}
@@ -662,6 +649,127 @@ func TestFilterFlags(t *testing.T) {
 				t.Errorf("filterFlags(%v, %v) = %d flags, want %d", tc.showHidden, tc.inherited, len(got), tc.wantCount)
 			}
 		})
+	}
+}
+
+// ---------------------------------------------------------------------------
+// RenderTo error path
+// ---------------------------------------------------------------------------
+
+type failWriter struct{}
+
+func (failWriter) Write([]byte) (int, error) { return 0, errors.New("write failed") }
+
+func TestRenderToWriteError(t *testing.T) {
+	ty := newTestTypography()
+	cmd := Command{Name: "testcmd"}
+	err := RenderTo(failWriter{}, ty, cmd)
+	if err == nil {
+		t.Error("RenderTo should return error on writer failure")
+	}
+}
+
+// ---------------------------------------------------------------------------
+// DefaultSectionOrder immutability
+// ---------------------------------------------------------------------------
+
+func TestDefaultSectionOrderReturnsACopy(t *testing.T) {
+	order1 := DefaultSectionOrder()
+	original := order1[0]
+	// Mutate the returned slice.
+	order1[0] = SectionFooter
+	// A second call must return the original, unmodified order.
+	order2 := DefaultSectionOrder()
+	if order2[0] != original {
+		t.Errorf("DefaultSectionOrder is not returning a copy: got %d, want %d", order2[0], original)
+	}
+}
+
+// ---------------------------------------------------------------------------
+// WithoutSections
+// ---------------------------------------------------------------------------
+
+func TestWithoutSections(t *testing.T) {
+	tests := []struct {
+		name    string
+		exclude []Section
+		check   func([]Section) bool
+		desc    string
+	}{
+		{
+			name:    "exclude one section",
+			exclude: []Section{SectionInheritedFlags},
+			check: func(order []Section) bool {
+				return !slices.Contains(order, SectionInheritedFlags)
+			},
+			desc: "SectionInheritedFlags should be excluded",
+		},
+		{
+			name:    "exclude multiple sections",
+			exclude: []Section{SectionFlags, SectionCommands},
+			check: func(order []Section) bool {
+				for _, s := range order {
+					if s == SectionFlags || s == SectionCommands {
+						return false
+					}
+				}
+				return true
+			},
+			desc: "SectionFlags and SectionCommands should be excluded",
+		},
+		{
+			name:    "no args leaves order unchanged",
+			exclude: nil,
+			check: func(order []Section) bool {
+				def := DefaultSectionOrder()
+				if len(order) != len(def) {
+					return false
+				}
+				for i := range order {
+					if order[i] != def[i] {
+						return false
+					}
+				}
+				return true
+			},
+			desc: "order should equal DefaultSectionOrder()",
+		},
+		{
+			name:    "unknown section is no-op",
+			exclude: []Section{Section(999)},
+			check: func(order []Section) bool {
+				def := DefaultSectionOrder()
+				return len(order) == len(def)
+			},
+			desc: "order length should be unchanged",
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			cfg := &RenderConfig{}
+			WithoutSections(tc.exclude...)(cfg)
+			if !tc.check(cfg.SectionOrder) {
+				t.Errorf("%s: got %v", tc.desc, cfg.SectionOrder)
+			}
+		})
+	}
+}
+
+func TestWithoutSectionsRendering(t *testing.T) {
+	ty := newTestTypography()
+	cmd := fullCommand()
+	result := stripANSI(Render(ty, cmd, WithStyle(StyleRich), WithoutSections(SectionExamples, SectionSeeAlso)))
+
+	if strings.Contains(result, "Examples") {
+		t.Errorf("Examples section should be excluded:\n%s", result)
+	}
+	if strings.Contains(result, "See Also") {
+		t.Errorf("See Also section should be excluded:\n%s", result)
+	}
+	// Other sections should still be present.
+	if !strings.Contains(result, "myapp") {
+		t.Errorf("Name section should be present:\n%s", result)
 	}
 }
 

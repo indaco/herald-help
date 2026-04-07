@@ -1,10 +1,11 @@
 package heraldhelp
 
+import "slices"
+
 // RenderConfig holds configuration for help rendering. Use RenderOption
 // functional options to customise the defaults.
 type RenderConfig struct {
 	Style         Style     // visual style (StyleRich or StyleCompact)
-	Width         int       // explicit terminal width override (0 = auto-detect)
 	SectionOrder  []Section // section rendering order (nil = DefaultSectionOrder)
 	ShowHidden    bool      // include hidden flags in output
 	EnvVarDisplay bool      // show environment variable bindings inline
@@ -19,13 +20,6 @@ type RenderOption func(*RenderConfig)
 func WithStyle(s Style) RenderOption {
 	return func(cfg *RenderConfig) {
 		cfg.Style = s
-	}
-}
-
-// WithWidth sets an explicit terminal width, overriding auto-detection.
-func WithWidth(w int) RenderOption {
-	return func(cfg *RenderConfig) {
-		cfg.Width = w
 	}
 }
 
@@ -49,5 +43,21 @@ func WithShowHidden(show bool) RenderOption {
 func WithEnvVarDisplay(show bool) RenderOption {
 	return func(cfg *RenderConfig) {
 		cfg.EnvVarDisplay = show
+	}
+}
+
+// WithoutSections excludes the listed sections from the default section order.
+// This is a convenience alternative to WithSectionOrder when you only want to
+// hide a few sections rather than listing all the ones you want.
+func WithoutSections(exclude ...Section) RenderOption {
+	return func(cfg *RenderConfig) {
+		wanted := DefaultSectionOrder()
+		filtered := make([]Section, 0, len(wanted))
+		for _, s := range wanted {
+			if !slices.Contains(exclude, s) {
+				filtered = append(filtered, s)
+			}
+		}
+		cfg.SectionOrder = filtered
 	}
 }

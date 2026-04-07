@@ -246,8 +246,8 @@ Flags are displayed in GNU-style format (`-o, --output`). Environment variables 
 | Option                          | Description                                                                        |
 | ------------------------------- | ---------------------------------------------------------------------------------- |
 | `WithStyle(style)`              | Set rendering style (`StyleCompact`, `StyleRich`, `StyleGrouped`, `StyleMarkdown`) |
-| `WithWidth(n)`                  | Set output width (default: auto-detect terminal width)                             |
 | `WithSectionOrder(sections...)` | Customize section ordering; omitted sections are hidden                            |
+| `WithoutSections(sections...)`  | Exclude specific sections from the default order                                   |
 | `WithShowHidden(bool)`          | Show hidden flags (default: false)                                                 |
 | `WithEnvVarDisplay(bool)`       | Show environment variable bindings (default: true)                                 |
 

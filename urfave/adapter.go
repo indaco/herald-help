@@ -14,6 +14,7 @@ package heraldurfave
 
 import (
 	"fmt"
+	"sort"
 
 	heraldhelp "github.com/indaco/herald-help"
 	"github.com/urfave/cli/v3"
@@ -67,7 +68,13 @@ func convertUrfaveFlags(cmd *cli.Command, hc *heraldhelp.Command) {
 	}
 
 	hc.Flags = uncategorized
-	for cat, flags := range categories {
+	catKeys := make([]string, 0, len(categories))
+	for k := range categories {
+		catKeys = append(catKeys, k)
+	}
+	sort.Strings(catKeys)
+	for _, cat := range catKeys {
+		flags := categories[cat]
 		hc.FlagGroups = append(hc.FlagGroups, heraldhelp.FlagGroup{
 			Name:  cat,
 			Flags: flags,
@@ -207,7 +214,13 @@ func convertUrfaveCommands(cmd *cli.Command, hc *heraldhelp.Command) {
 	}
 
 	hc.Commands = uncategorized
-	for cat, cmds := range categories {
+	catKeys := make([]string, 0, len(categories))
+	for k := range categories {
+		catKeys = append(catKeys, k)
+	}
+	sort.Strings(catKeys)
+	for _, cat := range catKeys {
+		cmds := categories[cat]
 		hc.CommandGroups = append(hc.CommandGroups, heraldhelp.CommandGroup{
 			Name:     cat,
 			Commands: cmds,

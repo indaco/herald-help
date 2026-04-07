@@ -107,11 +107,7 @@ func mdFlags(cmd Command, cfg *RenderConfig) string {
 }
 
 func mdInheritedFlags(cmd Command, cfg *RenderConfig) string {
-	inherited := filterFlags(cmd.Flags, cfg.ShowHidden, true)
-	for _, g := range cmd.FlagGroups {
-		inherited = append(inherited, filterFlags(g.Flags, cfg.ShowHidden, true)...)
-	}
-
+	inherited := collectInheritedFlags(cmd, cfg.ShowHidden)
 	if len(inherited) == 0 {
 		return ""
 	}

@@ -118,11 +118,7 @@ func groupedFlags(ty *herald.Typography, cmd Command, cfg *RenderConfig) string 
 
 // groupedInheritedFlags renders inherited flags in a fieldset.
 func groupedInheritedFlags(ty *herald.Typography, cmd Command, cfg *RenderConfig) string {
-	inherited := filterFlags(cmd.Flags, cfg.ShowHidden, true)
-	for _, g := range cmd.FlagGroups {
-		inherited = append(inherited, filterFlags(g.Flags, cfg.ShowHidden, true)...)
-	}
-
+	inherited := collectInheritedFlags(cmd, cfg.ShowHidden)
 	if len(inherited) == 0 {
 		return ""
 	}
@@ -130,63 +126,10 @@ func groupedInheritedFlags(ty *herald.Typography, cmd Command, cfg *RenderConfig
 	return ty.Fieldset("Inherited Flags", groupedFlagList(ty, inherited, cfg))
 }
 
-// groupedFlagList builds the KV content for a flag fieldset with aligned columns.
+// groupedFlagList builds the KV content for a flag fieldset using grouped-style
+// options.
 func groupedFlagList(ty *herald.Typography, flags []Flag, cfg *RenderConfig) string {
-	// Compute max widths for name and type columns.
-	maxNameW := 0
-	maxTypeW := 0
-	for i := range flags {
-		if w := len(formatFlagName(flags[i])); w > maxNameW {
-			maxNameW = w
-		}
-		ft := flags[i].Type
-		if ft == "bool" {
-			ft = ""
-		}
-		if len(ft) > maxTypeW {
-			maxTypeW = len(ft)
-		}
-	}
-
-	pairs := make([][2]string, 0, len(flags))
-	for i := range flags {
-		f := &flags[i]
-		name := formatFlagName(*f)
-		namePad := strings.Repeat(" ", maxNameW-len(name))
-
-		ft := f.Type
-		if ft == "bool" {
-			ft = ""
-		}
-		typePad := strings.Repeat(" ", maxTypeW-len(ft))
-
-		key := ty.Var(name) + namePad
-		if ft != "" {
-			key += " " + ty.Small(ft) + typePad + "  "
-		} else if maxTypeW > 0 {
-			key += " " + strings.Repeat(" ", maxTypeW) + "  "
-		}
-
-		desc := f.Desc
-		if f.Default != "" {
-			desc += " " + ty.Small("(default: "+f.Default+")")
-		}
-		if cfg.EnvVarDisplay && len(f.EnvVars) > 0 {
-			desc += " " + ty.Kbd(formatEnvVars(f.EnvVars))
-		}
-		if f.Required {
-			desc += " " + ty.Bold("(required)")
-		}
-		if f.Deprecated != "" {
-			desc += " " + ty.Bold("(DEPRECATED: "+f.Deprecated+")")
-		}
-		if len(f.Enum) > 0 {
-			desc += " " + ty.Small("[enum: "+strings.Join(f.Enum, ", ")+"]")
-		}
-		pairs = append(pairs, [2]string{key, desc})
-	}
-
-	return ty.KVGroupWithOpts(pairs, groupedKVOpts()...)
+	return buildKVFlagList(ty, flags, cfg, groupedKVOpts())
 }
 
 // groupedCommands renders subcommands in a fieldset with KV layout.
@@ -212,43 +155,10 @@ func groupedCommands(ty *herald.Typography, cmd Command) string {
 	return strings.Join(parts, "\n")
 }
 
-// groupedCommandList builds the KV content for a command fieldset with aligned columns.
+// groupedCommandList builds the KV content for a command fieldset using
+// grouped-style options.
 func groupedCommandList(ty *herald.Typography, cmds []CommandRef) string {
-	maxNameW := 0
-	maxAliasW := 0
-	hasAliases := false
-	for _, c := range cmds {
-		if len(c.Name) > maxNameW {
-			maxNameW = len(c.Name)
-		}
-		a := strings.Join(c.Aliases, ", ")
-		if a != "" {
-			hasAliases = true
-		}
-		if len(a) > maxAliasW {
-			maxAliasW = len(a)
-		}
-	}
-
-	pairs := make([][2]string, len(cmds))
-	for i, c := range cmds {
-		a := strings.Join(c.Aliases, ", ")
-
-		key := ty.Var(c.Name)
-		if a != "" {
-			key += ty.Small(",")
-		} else if hasAliases {
-			key += " "
-		}
-		key += strings.Repeat(" ", maxNameW-len(c.Name))
-
-		if hasAliases {
-			key += " " + ty.Small(a) + strings.Repeat(" ", maxAliasW-len(a)) + "  "
-		}
-
-		pairs[i] = [2]string{key, c.Desc}
-	}
-	return ty.KVGroupWithOpts(pairs, groupedKVOpts()...)
+	return buildKVCommandList(ty, cmds, groupedKVOpts())
 }
 
 // groupedExamples renders examples in a fieldset.
