@@ -45,3 +45,19 @@ func WithEnvVarDisplay(show bool) RenderOption {
 		cfg.EnvVarDisplay = show
 	}
 }
+
+// WithoutSections excludes the listed sections from the default section order.
+// This is a convenience alternative to WithSectionOrder when you only want to
+// hide a few sections rather than listing all the ones you want.
+func WithoutSections(exclude ...Section) RenderOption {
+	return func(cfg *RenderConfig) {
+		wanted := DefaultSectionOrder()
+		filtered := make([]Section, 0, len(wanted))
+		for _, s := range wanted {
+			if !slices.Contains(exclude, s) {
+				filtered = append(filtered, s)
+			}
+		}
+		cfg.SectionOrder = filtered
+	}
+}
