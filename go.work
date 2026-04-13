@@ -5,11 +5,4 @@ use (
 	./cobra
 	./kong
 	./urfave
-	./examples/compact/002_cobra
-	./examples/compact/003_urfave
-	./examples/compact/004_kong
-	./examples/markdown/001_heraldmd-pipeline
-	./examples/rich/002_cobra
-	./examples/rich/003_urfave
-	./examples/rich/004_kong
 )
