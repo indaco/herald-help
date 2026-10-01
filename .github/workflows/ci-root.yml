@@ -48,7 +48,7 @@ jobs:
         run: go mod verify
 
       - name: Install just
-        uses: taiki-e/install-action@v2.85.4
+        uses: taiki-e/install-action@v2.87.21
         with:
           tool: just
 
@@ -97,7 +97,7 @@ jobs:
         run: go mod verify
 
       - name: Install just
-        uses: taiki-e/install-action@v2.85.4
+        uses: taiki-e/install-action@v2.87.21
         with:
           tool: just
 
@@ -131,7 +131,7 @@ jobs:
         run: go mod verify
 
       - name: Install just
-        uses: taiki-e/install-action@v2.85.4
+        uses: taiki-e/install-action@v2.87.21
         with:
           tool: just
 
